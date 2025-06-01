@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Auxiliar - Solaris Andahuaylas</title>
+
+<link href="inter_au.css" rel="stylesheet"/></head>
+<body>
+<div class="phone-container">
+<div class="status-bar">
+<div class="notch"></div>
+</div>
+<div class="header">
+<img alt="Logo Solaris" src="logo-solaris.jpg" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto; box-shadow: 0 2px 6px rgba(0,0,0,0.2);"/>
+<div class="school-name">SOLARIS</div>
+<div class="school-subtitle">ANDAHUAYLAS</div>
+</div>
+<div class="content">
+<div class="welcome-section">
+<div class="user-info">
+<div class="avatar">MR</div>
+<div class="user-details">
+<h3>María Rodríguez</h3>
+<div class="user-role">Auxiliar General</div>
+</div>
+</div>
+<div class="current-time" id="current-time">
+                    Hoy - 08:30 AM
+                </div>
+</div>
+<div class="mode-selector">
+<div class="section-title">
+<span class="section-icon">⚙️</span>
+                    Modo de Asistencia
+                </div>
+<div class="mode-tabs">
+<button class="mode-tab entrada active" onclick="switchMode('entrada')">
+                        🟢 ENTRADA
+                    </button>
+<button class="mode-tab salida" onclick="switchMode('salida')">
+                        🔴 SALIDA
+                    </button>
+</div>
+</div>
+<div class="scanner-section">
+<div class="section-title">
+<span class="section-icon">📱</span>
+<span id="scanner-title">Control de Entrada</span>
+</div>
+<div class="scanner-area entrada" id="scanner">
+<div class="scanner-overlay entrada">
+<div class="scanner-line entrada"></div>
+</div>
+<div style="position: relative; z-index: 10; color: #666;">
+<div style="font-size: 48px; margin-bottom: 10px;">📱</div>
+<div>Escanea el código QR del estudiante</div>
+</div>
+</div>
+<button class="scan-button entrada" id="scan-btn" onclick="simulateScan()">
+                    Iniciar Escaneo de Entrada
+                </button>
+<div class="scanner-stats">
+<div class="stat-item">
+<div class="stat-number entrada" id="entrada-count">156</div>
+<div class="stat-label">Entradas</div>
+</div>
+<div class="stat-item">
+<div class="stat-number salida" id="salida-count">142</div>
+<div class="stat-label">Salidas</div>
+</div>
+</div>
+</div>
+<div class="attendance-list">
+<div class="section-title">
+<span class="section-icon">📋</span>
+                    Registros Recientes
+                </div>
+<div class="filter-tabs">
+<button class="filter-tab active" onclick="filterList('todos')">Todos</button>
+<button class="filter-tab" onclick="filterList('entrada')">Entradas</button>
+<button class="filter-tab" onclick="filterList('salida')">Salidas</button>
+</div>
+<div id="attendance-records">
+<div class="student-item" data-type="entrada">
+<div class="student-info">
+<div class="student-avatar">AV</div>
+<div class="student-details">
+<div class="student-name">Ana Vargas</div>
+<div class="student-meta">5to Grado A - 08:15 AM</div>
+</div>
+</div>
+<span class="attendance-status status-entrada">🟢 Entrada</span>
+</div>
+<div class="student-item" data-type="salida">
+<div class="student-info">
+<div class="student-avatar">LM</div>
+<div class="student-details">
+<div class="student-name">Luis Mendoza</div>
+<div class="student-meta">4to Grado B - 02:15 PM</div>
+</div>
+</div>
+<span class="attendance-status status-salida">🔴 Salida</span>
+</div>
+<div class="student-item" data-type="entrada">
+<div class="student-info">
+<div class="student-avatar">SF</div>
+<div class="student-details">
+<div class="student-name">Sofia Flores</div>
+<div class="student-meta">3ro Grado A - 08:22 AM</div>
+</div>
+</div>
+<span class="attendance-status status-entrada">🟢 Entrada</span>
+</div>
+<div class="student-item" data-type="entrada">
+<div class="student-info">
+<div class="student-avatar">JR</div>
+<div class="student-details">
+<div class="student-name">José Ramírez</div>
+<div class="student-meta">2do Grado C - 08:30 AM</div>
+</div>
+</div>
+<span class="attendance-status status-entrada">🟢 Entrada</span>
+</div>
+<div class="student-item" data-type="salida">
+<div class="student-info">
+<div class="student-avatar">MC</div>
+<div class="student-details">
+<div class="student-name">María Castro</div>
+<div class="student-meta">6to Grado A - 02:10 PM</div>
+</div>
+</div>
+<span class="attendance-status status-salida">🔴 Salida</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bottom-nav">
+<div class="nav-item">
+<span class="nav-icon">📱</span>
+<span class="nav-text">Scanner</span>
+</div>
+</div>
+</div>
+<script>
+        let currentMode = 'entrada';
+
+        function switchMode(mode) {
+            currentMode = mode;
+            
+            // Actualizar tabs
+            document.querySelectorAll('.mode-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.mode-tab.${mode}`).classList.add('active');
+            
+            // Actualizar scanner
+            const scanner = document.getElementById('scanner');
+            const overlay = scanner.querySelector('.scanner-overlay');
+            const line = scanner.querySelector('.scanner-line');
+            const button = document.getElementById('scan-btn');
+            const title = document.getElementById('scanner-title');
+            
+            // Remover clases anteriores
+            scanner.classList.remove('entrada', 'salida');
+            overlay.classList.remove('entrada', 'salida');
+            line.classList.remove('entrada', 'salida');
+            button.classList.remove('entrada', 'salida');
+            
+            // Agregar nuevas clases
+            scanner.classList.add(mode);
+            overlay.classList.add(mode);
+            line.classList.add(mode);
+            button.classList.add(mode);
+            
+            // Actualizar textos
+            if (mode === 'entrada') {
+                title.textContent = 'Control de Entrada';
+                button.textContent = 'Iniciar Escaneo de Entrada';
+            } else {
+                title.textContent = 'Control de Salida';
+                button.textContent = 'Iniciar Escaneo de Salida';
+            }
+        }
+
+        function simulateScan() {
+            const scanner = document.getElementById('scanner');
+            const button = document.getElementById('scan-btn');
+            
+            // Deshabilitar botón
+            button.disabled = true;
+            button.textContent = 'Escaneando...';
+            
+            // Simular efecto de escaneo exitoso
+            setTimeout(() => {
+                const studentNames = ['Carlos López', 'Andrea Medina', 'Diego Torres', 'Valeria Sánchez'];
+                const grades = ['1ro A', '2do B', '3ro C', '4to A', '5to B', '6to A'];
+                const randomStudent = studentNames[Math.floor(Math.random() * studentNames.length)];
+                const randomGrade = grades[Math.floor(Math.random() * grades.length)];
+                
+                scanner.style.background = currentMode === 'entrada' ? '#e8f5e8' : '#ffebee';
+                scanner.innerHTML = `
+                    <div style="color: ${currentMode === 'entrada' ? '#2e7d32' : '#d32f2f'}; text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 10px;">${currentMode === 'entrada' ? '✅' : '🚪'}</div>
+                        <div style="font-weight: bold;">${currentMode === 'entrada' ? '¡Entrada Registrada!' : '¡Salida Registrada!'}</div>
+                        <div style="font-size: 14px; margin-top: 5px;">${randomStudent} - ${randomGrade}</div>
+                        <div style="font-size: 12px; margin-top: 3px; opacity: 0.8;">${new Date().toLocaleTimeString('es-ES').substr(0,5)}</div>
+                    </div>
+                `;
+                
+                // Actualizar contadores
+                const entradaCount = document.getElementById('entrada-count');
+                const salidaCount = document.getElementById('salida-count');
+                
+                if (currentMode === 'entrada') {
+                    entradaCount.textContent = parseInt(entradaCount.textContent) + 1;
+                } else {
+                    salidaCount.textContent = parseInt(salidaCount.textContent) + 1;
+                }
+                
+                // Agregar nuevo registro a la lista
+                addNewRecord(randomStudent, randomGrade, currentMode);
+                
+                // Restaurar scanner después de 3 segundos
+                setTimeout(() => {
+                    scanner.style.background = '#f0f0f0';
+                    scanner.innerHTML = `
+                        <div class="scanner-overlay ${currentMode}">
+                            <div class="scanner-line ${currentMode}"></div>
+                        </div>
+                        <div style="position: relative; z-index: 10; color: #666;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">📱</div>
+                            <div>Escanea el código QR del estudiante</div>
+                        </div>
+                    `;
+                    button.disabled = false;
+                    button.textContent = currentMode === 'entrada' ? 'Iniciar Escaneo de Entrada' : 'Iniciar Escaneo de Salida';
+                }, 3000);
+            }, 1500);
+        }
+
+        function addNewRecord(name, grade, type) {
+            const recordsList = document.getElementById('attendance-records');
+            const time = new Date().toLocaleTimeString('es-ES').substr(0,5);
+            const initials = name.split(' ').map(n => n[0]).join('');
+            
+            const newRecord = document.createElement('div');
+            newRecord.className = 'student-item';
+            newRecord.setAttribute('data-type', type);
+            newRecord.innerHTML = `
+                <div class="student-info">
+                    <div class="student-avatar">${initials}</div>
+                    <div class="student-details">
+                        <div class="student-name">${name}</div>
+                        <div class="student-meta">${grade} - ${time}</div>
+                    </div>
+                </div>
+                <span class="attendance-status status-${type}">
+                    ${type === 'entrada' ? '🟢 Entrada' : '🔴 Salida'}
+                </span>
+            `;
+            
+            // Insertar al principio de la lista
+            recordsList.insertBefore(newRecord, recordsList.firstChild);
+            
+            // Animar la entrada
+            newRecord.style.opacity = '0';
+            newRecord.style.transform = 'translateY(-20px)';
+            setTimeout(() => {
+                newRecord.style.transition = 'all 0.3s ease';
+                newRecord.style.opacity = '1';
+                newRecord.style.transform = 'translateY(0)';
+            }, 100);
+        }
+
+        function filterList(filter) {
+            // Actualizar tabs
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Filtrar registros
+            const records = document.querySelectorAll('.student-item');
+            records.forEach(record => {
+                if (filter === 'todos' || record.getAttribute('data-type') === filter) {
+                    record.style.display = 'flex';
+                } else {
+                    record.style.display = 'none';
+                }
+            });
+        }
+
+        // Actualizar hora cada minuto
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('es-ES').substr(0,5);
+            const dateStr = now.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+            document.getElementById('current-time').textContent = `${dateStr} - ${timeStr}`;
+        }
+
+        setInterval(updateTime, 60000);
+        updateTime();
+    </script>
+</body>
+</html>

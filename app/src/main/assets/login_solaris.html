@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Login Solaris</title>
+    <link href="login_solaris.css" rel="stylesheet"/>
+</head>
+
+<body>
+<div class="login-container">
+    <div class="header">
+        <h1>Bienvenido</h1>
+    </div>
+
+    <div class="logo-section">
+        <img alt="Logo Solaris" src="logo-solaris.jpg"/>
+        <h2>SOLARIS</h2>
+        <h3>ANDAHUAYLAS</h3>
+
+        <!-- COMBOBOX DE ROL -->
+        <div style="margin-top: 10px;">
+            <label for="rol">Rol:</label>
+            <select id="rol" name="rol">
+                <option value="usuario">Usuario</option>
+                <option value="auxiliar">Auxiliar</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- USUARIO -->
+    <div class="form-group">
+        <label for="username">Usuario</label>
+        <input id="username" placeholder="Ingrese su usuario" type="text"/>
+    </div>
+
+    <!-- CONTRASEÑA -->
+    <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input id="password" placeholder="Ingrese su contraseña" type="password"/>
+    </div>
+
+    <!-- BOTÓN LOGIN -->
+    <div class="button-container">
+        <button id="loginBtn" class="login-btn">Iniciar Sesión</button>
+    </div>
+</div>
+
+<!-- SCRIPT DE REDIRECCIÓN -->
+<script>
+    document.getElementById("loginBtn").addEventListener("click", function () {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const rol = document.getElementById("rol").value;
+
+      // Validación básica
+      if (!username || !password) {
+        alert("Por favor completa todos los campos.");
+        return;
+      }
+
+      // Redirección por rol
+      if (rol === "usuario") {
+        window.location.href = "inter_apo.html";
+      } else if (rol === "auxiliar") {
+        window.location.href = "inter_au.html";
+      } else {
+        alert("Rol no válido");
+      }
+    });
+</script>
+</body>
+</html>
